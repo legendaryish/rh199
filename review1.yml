@@ -1,0 +1,9 @@
+---
+  - name: first review tasks
+    #hosts: rxt
+    hosts: localhost
+    connection: local
+    become: true
+
+    roles:
+      - rhcsa_15_users
