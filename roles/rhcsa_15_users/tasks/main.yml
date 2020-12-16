@@ -1,0 +1,57 @@
+---
+### 5.  Change configuration and add new users and a new group according to the following requirements:
+# Change the default system settings for newly created users to ensure their passwords arechanged at least every 60 days.•
+  - name: user defaults
+    lineinfile:
+      path: /etc/login.defs
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      state: present
+#      validate: 'sshd -t -f %s'
+    with_items:
+      - regexp: "^PASS_MAX_DAYS"
+        line: "PASS_MAX_DAYS 60"
+      - regexp: "^PASS_MIN_DAYS"
+        line: "PASS_MIN_DAYS 0"
+      - regexp: "^PASS_MIN_LEN"
+        line: "PASS_MIN_LEN 5"
+      - regexp: "^PASS_WARN_AGE"
+        line: "PASS_WARN_AGE 7"
+
+# Create a new group named instructors with a GID of 30000.•
+  - name: instructors group
+    group:
+      name: instructors
+      gid: 30000
+      state: present
+
+# Create three new users: gorwell, rbradbury, and dadams, with a password of firstpw.•
+# Add the new users to the supplementary group instructors. The primary group shouldremain as the user private group.•
+
+  - name: add users to group and password
+    user:
+      name: "{{ item }}"
+      password: "{{ 'firstpw'| password_hash('sha512','mysecretsalt') }}"
+      groups: instructors
+    register: user_results
+    loop: "{{ rhcsa_users }}"
+
+# Set the three newly created accounts to expire 60 days from today.•
+  - name: password expiration
+    shell: |
+      chage -E `date -d +60days +%y-%m-%d` "{{ item }}"
+    when: user_results.changed
+    loop: "{{ rhcsa_users }}"
+
+# Change the password policy for the gorwell account to require a new password every 10days.•
+  - name: new password every 10 days
+    shell: |
+      chage -M 10 gorwell
+    when: user_results.changed
+
+# Force all three newly created users to change their password on first login.
+  - name: force password change on first login
+    shell: |
+      chage -d 0 "{{ item }}"
+    when: user_results.changed
+    loop: "{{ rhcsa_users }}"
