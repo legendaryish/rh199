@@ -1,0 +1,8 @@
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Desktop
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Documents
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Downloads
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Music
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Pictures
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Public
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Templates
+drwxr-xr-x. 2 student student   6 Apr  9 17:36 Videos
